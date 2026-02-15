@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Student Hub Store</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Poppins:wght@400;500&display=swap" rel="stylesheet">
+<style>
+body {
+  margin:0;
+  font-family:'Poppins',sans-serif;
+  background:#e6f0fa;
+  padding-bottom:200px;
+}
+
+/* Hero Section */
+.hero {
+  position:relative;
+  height:70vh;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+  color:#fff;
+  overflow:hidden;
+  background:#1a3e6f;
+}
+.hero h1 {
+  font-family:'Montserrat',sans-serif;
+  font-size:3rem;
+  margin:0;
+}
+.hero p {
+  font-size:1.2rem;
+  margin-top:10px;
+}
+
+/* Section Styles */
+.section { padding:20px; margin-bottom:40px; }
+.section-header { font-weight:700; margin-bottom:15px; font-size:1.4rem; color:#1a3e6f; }
+.section-note { font-size:0.85rem; color:#1a3e6f; margin-bottom:10px; font-weight:600; }
+
+/* Product Grid */
+.product-grid {
+  display:flex;
+  flex-wrap:wrap;
+  gap:15px;
+  justify-content:flex-start;
+}
+
+/* Product Card */
+.product-card {
+  width:calc(25% - 15px);
+  background:#fff;
+  border-radius:12px;
+  box-shadow:0 4px 12px rgba(0,0,0,0.15);
+  text-align:center;
+  padding:15px;
+  cursor:pointer;
+  position:relative;
+  transition:transform 0.2s;
+}
+.product-card:hover { transform:scale(1.03); }
+.product-card img { width:100%; height:150px; object-fit:cover; border-radius:8px; }
+.product-card .name { margin-top:10px; font-weight:600; font-size:1rem; color:#1a3e6f; }
+.product-card .price { font-size:0.9rem; color:#0a2a50; margin-top:5px; }
+.product-card .qty { font-size:0.85rem; color:#1a3e6f; font-weight:600; margin-top:5px; }
+
+/* Modal */
+#modal {
+  display:none;
+  position:fixed;
+  top:0; left:0;
+  width:100%; height:100%;
+  background:rgba(0,0,0,0.7);
+  justify-content:center; align-items:center;
+  z-index:200;
+}
+#modal-content {
+  background:#fff;
+  padding:20px;
+  border-radius:12px;
+  max-width:90%;
+  max-height:90%;
+  text-align:center;
+  position:relative;
+}
+#modal img { max-width:100%; max-height:300px; object-fit:cover; border-radius:8px; }
+#modal .name { font-weight:700; margin-top:10px; font-size:1.1rem; color:#1a3e6f; }
+#modal .price { margin-top:5px; color:#1a3e6f; font-weight:600; }
+#modal button { margin-top:15px; background:#1a3e6f; color:#fff; border:none; padding:10px 15px; border-radius:8px; cursor:pointer; font-weight:700; }
+#modal .close { position:absolute; top:10px; right:15px; font-size:1.2rem; font-weight:bold; cursor:pointer; }
+
+/* Cart */
+#cart {
+  position:fixed;
+  bottom:60px;
+  right:10px;
+  background:#fff;
+  border-radius:12px;
+  box-shadow:0 6px 18px rgba(0,0,0,0.2);
+  width:280px;
+  max-height:350px;
+  overflow-y:auto;
+  padding:10px;
+  z-index:100;
+}
+#cart h3 { margin:0 0 10px 0; font-size:1rem; color:#1a3e6f; text-align:center; }
+.cart-item { display:flex; justify-content:space-between; align-items:center; font-size:0.85rem; padding:3px 0; }
+.cart-item .remove { color:#1a3e6f; font-weight:bold; cursor:pointer; margin-left:10px; }
+
+/* Checkout Button */
+#checkout {
+  position:fixed;
+  bottom:10px;
+  left:50%;
+  transform:translateX(-50%);
+  width:90%;
+  max-width:350px;
+  background:#1a3e6f;
+  color:#fff;
+  font-weight:700;
+  border:none;
+  border-radius:12px;
+  padding:15px;
+  font-size:1rem;
+  cursor:pointer;
+  z-index:101;
+}
+#checkout:hover { background:#0a2a50; }
+
+/* Responsive */
+@media(max-width:1024px){ .product-card { width:calc(33.33% - 15px); } }
+@media(max-width:768px){ .product-card { width:calc(50% - 15px); } }
+@media(max-width:480px){ .product-card { width:100%; } }
+</style>
+</head>
+<body>
+
+<!-- Hero -->
+<div class="hero">
+  <h1>Student Hub Store</h1>
+  <p>Essential & Tech Items for Students</p>
+</div>
+
+<!-- Phone & Tech Accessories -->
+<div class="section" id="tech-section">
+  <div class="section-header">Phone & Tech Accessories</div>
+  <div class="product-grid" id="tech-products"></div>
+</div>
+
+<!-- Small Appliances -->
+<div class="section" id="appliance-section">
+  <div class="section-header">Small Appliances</div>
+  <div class="product-grid" id="appliance-products"></div>
+</div>
+
+<!-- Personal & Ladies Accessories -->
+<div class="section" id="personal-section">
+  <div class="section-header">Personal & Ladies Accessories</div>
+  <div class="product-grid" id="personal-products"></div>
+</div>
+
+<!-- Study & Stationery -->
+<div class="section" id="study-section">
+  <div class="section-header">Study & Stationery</div>
+  <div class="product-grid" id="study-products"></div>
+</div>
+
+<!-- Cart -->
+<div id="cart">
+  <h3>Cart</h3>
+  <div id="cart-items"></div>
+  <div style="text-align:center; margin-top:8px;">Total: $<span id="total-price">0</span></div>
+</div>
+
+<!-- Checkout -->
+<button id="checkout">Checkout via WhatsApp</button>
+
+<!-- Modal -->
+<div id="modal">
+  <div id="modal-content">
+    <span class="close">&times;</span>
+    <img id="modal-img" src="" alt="">
+    <div class="name" id="modal-name"></div>
+    <div class="price" id="modal-price"></div>
+    <button id="modal-add">Add to Cart</button>
+  </div>
+</div>
+
+<script>
+const maxQuantity=5;
+let cart={};
+let selectedItem=null;
+
+// Product Data
+const techProducts=[
+  {name:'Phone Charger', price:3, img:'phone-charger.jpg'},
+  {name:'Earphones', price:5, img:'earphones.jpg'},
+  {name:'Power Bank', price:12, img:'powerbank.jpg'},
+  {name:'Mini Speaker', price:15, img:'mini-speaker.jpg'}
+];
+const appliances=[
+  {name:'Kettle', price:10, img:'kettle.jpg'},
+  {name:'Water Heater', price:15, img:'water-heater.jpg'},
+  {name:'Desk Fan', price:12, img:'desk-fan.jpg'}
+];
+const personalItems=[
+  {name:'Hair Clips', price:2, img:'hair-clips.jpg'},
+  {name:'Small Bag', price:5, img:'small-bag.jpg'},
+  {name:'Cap', price:3, img:'cap.jpg'}
+];
+const studyItems=[
+  {name:'Notebook', price:2, img:'notebook.jpg'},
+  {name:'Pen Set', price:1.5, img:'pen-set.jpg'},
+  {name:'USB Drive', price:8, img:'usb-drive.jpg'}
+];
+
+// Create product card
+function createProductCard(item){
+  const card=document.createElement('div');
+  card.className='product-card';
+  card.innerHTML=`<img src="${item.img}" alt="${item.name}"><div class="name">${item.name}</div><div class="price">$${item.price}</div><div class="qty"></div>`;
+  card.addEventListener('click',()=>{
+    selectedItem=item;
+    document.getElementById('modal-img').src=item.img;
+    document.getElementById('modal-name').innerText=item.name;
+    document.getElementById('modal-price').innerText=`$${item.price}`;
+    document.getElementById('modal').style.display='flex';
+  });
+  return card;
+}
+
+// Update Cart
+function updateCart(){
+  const cartItems=document.getElementById('cart-items');
+  cartItems.innerHTML='';
+  let total=0;
+  for(const [name,item] of Object.entries(cart)){
+    const div=document.createElement('div');
+    div.className='cart-item';
+    div.innerHTML=`${name} x${item.quantity} <span class="remove">X</span>`;
+    div.querySelector('.remove').addEventListener('click',()=>{delete cart[name]; updateCart();});
+    cartItems.appendChild(div);
+    total+=item.price*item.quantity;
+  }
+  document.getElementById('total-price').innerText=total.toFixed(2);
+}
+
+// Populate products
+techProducts.forEach(item=>document.getElementById('tech-products').appendChild(createProductCard(item)));
+appliances.forEach(item=>document.getElementById('appliance-products').appendChild(createProductCard(item)));
+personalItems.forEach(item=>document.getElementById('personal-products').appendChild(createProductCard(item)));
+studyItems.forEach(item=>document.getElementById('study-products').appendChild(createProductCard(item)));
+
+// Modal Events
+document.getElementById('modal-add').addEventListener('click',()=>{
+  if(selectedItem){
+    if(cart[selectedItem.name]){
+      if(cart[selectedItem.name].quantity<maxQuantity){ cart[selectedItem.name].quantity+=1; } else { alert(`Maximum ${maxQuantity} per item`); return; }
+    } else { cart[selectedItem.name]={price:selectedItem.price, quantity:1}; }
+    updateCart();
+    document.getElementById('modal').style.display='none';
+  }
+});
+document.querySelector('#modal .close').addEventListener('click',()=>{document.getElementById('modal').style.display='none';});
+
+// Checkout via WhatsApp
+document.getElementById('checkout').addEventListener('click',()=>{
+  if(Object.keys(cart).length===0){ alert('Cart is empty!'); return; }
+  let message='Hi Student Hub! I want to order:\n\n';
+  let total=0;
+  for(const [name,item] of Object.entries(cart)){
+    message+=`${item.quantity}x ${name}\n`;
+    total+=item.price*item.quantity;
+  }
+  message+=`\nTotal: $${total.toFixed(2)}\nPickup/Delivery Location: `;
+  const whatsappUrl=`https://wa.me/263779388560?text=${encodeURIComponent(message)}`;
+  window.open(whatsappUrl,'_blank');
+});
+</script>
+
+<!-- Footer -->
+<footer style="text-align:center; padding:15px; color:#0a2a50; font-weight:600;">Powered by Zalackron Smart Operating System</footer>
+
+</body>
+</html>
